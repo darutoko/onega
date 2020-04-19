@@ -1,3 +1,10 @@
+# VSCode
+*.code*
+.vscode
+
+# NPM Lock file
+package-lock.json
+
 # Logs
 logs
 *.log
