@@ -2,7 +2,7 @@ import Vue from "vue"
 import VueRouter from "vue-router"
 
 import Home from "@/views/Home.vue"
-import Dictionaries from "@/views/Dictionaries.vue"
+import Decks from "@/views/Decks.vue"
 
 Vue.use(VueRouter)
 
@@ -13,9 +13,9 @@ Vue.use(VueRouter)
     component: Home
   },
   {
-    path: "/dictionaries",
-    name: "Dictionaries",
-    component: Dictionaries
+    path: "/decks",
+    name: "Decks",
+    component: Decks
   },
   {
     path: "/about",

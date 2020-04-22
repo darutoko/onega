@@ -1,12 +1,12 @@
 <template>
 	<v-row>
-		<v-col>dictionaries</v-col>
+		<v-col>decks</v-col>
 	</v-row>
 </template>
 
 <script>
 export default {
-	name: "Dictionaries",
+	name: "Decks",
 	data() {
 		return {
 			//
