@@ -2,7 +2,7 @@ import Vue from "vue"
 import VueRouter from "vue-router"
 
 import Home from "@/views/Home.vue"
-import Decks from "@/views/Decks.vue"
+import DeckList from "@/views/DeckList.vue"
 
 Vue.use(VueRouter)
 
@@ -14,8 +14,8 @@ Vue.use(VueRouter)
   },
   {
     path: "/decks",
-    name: "Decks",
-    component: Decks
+    name: "DeckList",
+    component: DeckList
   },
   {
     path: "/about",
