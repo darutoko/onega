@@ -3,6 +3,7 @@ import VueRouter from "vue-router"
 
 import Home from "@/views/Home.vue"
 import DeckList from "@/views/DeckList.vue"
+import DeckEdit from "@/views/DeckEdit.vue"
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,11 @@ Vue.use(VueRouter)
     path: "/decks",
     name: "DeckList",
     component: DeckList
+  },
+  {
+    path: "/decks/:id",
+    name: "DeckEdit",
+    component: DeckEdit
   },
   {
     path: "/about",

@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"editor.detectIndentation": false,
+		"editor.formatOnSave": true,
+		"prettier.useTabs": true,
+		"prettier.semi": false,
+		"prettier.printWidth": 140,
+		"prettier.arrowParens": "avoid"
+	}
+}

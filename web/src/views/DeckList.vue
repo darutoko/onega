@@ -30,7 +30,7 @@
 							<v-btn color="blue" dark>Memorize</v-btn>
 							<v-btn color="green" dark>Test</v-btn>
 							<v-spacer></v-spacer>
-							<v-btn color="blue-grey" dark>Edit</v-btn>
+							<v-btn color="blue-grey" :to="{ name: 'DeckEdit', params: { id: '1' } }" dark>Edit</v-btn>
 							<v-btn color="red" dark>Delete</v-btn>
 						</v-card-actions>
 					</v-card>
@@ -47,6 +47,6 @@ export default {
 		return {
 			//
 		}
-	}
+	},
 }
 </script>

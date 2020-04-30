@@ -1,7 +1,7 @@
 <template>
 	<v-row>
 		<v-col>
-			<router-link :to="{name: 'Decks'}">To the decks</router-link>
+			<router-link :to="{ name: 'DeckList' }">To the decks</router-link>
 		</v-col>
 	</v-row>
 </template>
@@ -9,7 +9,6 @@
 <script>
 export default {
 	name: "Home",
-	components: {
-	}
+	components: {},
 }
 </script>
