@@ -9,7 +9,7 @@
 
 			<v-row align="center">
 				<v-col cols="auto">
-					<v-btn class="my-auto" color="primary">Add</v-btn>
+					<v-btn class="my-auto" color="blue darken-3" dark>Add</v-btn>
 				</v-col>
 				<v-col>
 					<v-text-field label="Deck Name"></v-text-field>
@@ -22,16 +22,16 @@
 						<v-card-title>Deck Name</v-card-title>
 						<v-card-text>
 							Deck Status
-							<v-progress-linear value="80" color="success" background-color="error" height="25">
+							<v-progress-linear value="80" color="green darken-3" height="25">
 								<strong class="white--text">40/50</strong>
 							</v-progress-linear>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn color="blue" dark>Memorize</v-btn>
-							<v-btn color="green" dark>Test</v-btn>
+							<v-btn color="blue darken-3" :to="{ name: 'DeckMemorize', params: { id: '1' } }" dark>Memorize</v-btn>
+							<v-btn color="green darken-3" dark>Test</v-btn>
 							<v-spacer></v-spacer>
 							<v-btn color="blue-grey" :to="{ name: 'DeckEdit', params: { id: '1' } }" dark>Edit</v-btn>
-							<v-btn color="red" dark>Delete</v-btn>
+							<v-btn color="red darken-3" dark>Delete</v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-col>
