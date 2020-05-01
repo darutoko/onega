@@ -28,7 +28,7 @@
 						</v-card-text>
 						<v-card-actions>
 							<v-btn color="blue darken-3" :to="{ name: 'DeckMemorize', params: { id: '1' } }" dark>Memorize</v-btn>
-							<v-btn color="green darken-3" dark>Test</v-btn>
+							<v-btn color="green darken-3" :to="{ name: 'DeckTest', params: { id: '1' } }" dark>Test</v-btn>
 							<v-spacer></v-spacer>
 							<v-btn color="blue-grey" :to="{ name: 'DeckEdit', params: { id: '1' } }" dark>Edit</v-btn>
 							<v-btn color="red darken-3" dark>Delete</v-btn>

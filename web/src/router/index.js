@@ -5,6 +5,7 @@ import Home from "@/views/Home.vue"
 import DeckList from "@/views/DeckList.vue"
 import DeckEdit from "@/views/DeckEdit.vue"
 import DeckMemorize from "@/views/DeckMemorize.vue"
+import DeckTest from "@/views/DeckTest.vue"
 
 Vue.use(VueRouter)
 
@@ -28,6 +29,11 @@ const routes = [
 		path: "/decks/:id/memorize",
 		name: "DeckMemorize",
 		component: DeckMemorize,
+	},
+	{
+		path: "/decks/:id/test",
+		name: "DeckTest",
+		component: DeckTest,
 	},
 	// route level code-splitting
 	// this generates a separate chunk (about.[hash].js) for this route
