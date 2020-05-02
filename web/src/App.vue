@@ -13,16 +13,13 @@
 			<v-container>
 				<v-row>
 					<v-col>
-						<v-alert
-							v-for="(alert, index) in this.$store.state.alerts"
-							:color="alert.color"
-							:type="alert.type"
-							:key="index"
-							dark
-							dismissible
-						>
+						<v-alert v-for="(alert, index) in $store.state.alerts" :color="alert.color" :type="alert.type" :key="index" dark dismissible>
 							{{ alert.message }}
 						</v-alert>
+						<v-snackbar v-model="isSnackbarVisible" :timeout="$store.state.snackbar.timeout" left>
+							{{ $store.state.snackbar.message }}
+							<v-btn @click="isSnackbarVisible = false" text dark>Close</v-btn>
+						</v-snackbar>
 					</v-col>
 				</v-row>
 			</v-container>
@@ -41,5 +38,15 @@ export default {
 	data: () => ({
 		drawer: null,
 	}),
+	computed: {
+		isSnackbarVisible: {
+			get() {
+				return this.$store.state.snackbar.isVisible
+			},
+			set(value) {
+				if (!value) this.$store.commit("hideSnackbar")
+			},
+		},
+	},
 }
 </script>
