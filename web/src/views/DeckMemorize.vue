@@ -1,26 +1,24 @@
 <template>
-	<v-row>
-		<v-col class="pa-0">
-			<v-row align="center">
-				<v-col cols="auto">
-					<v-btn :to="{ name: 'DeckList' }" text>Go back</v-btn>
-				</v-col>
-				<v-col>
-					<h1>Deck Name</h1>
-				</v-col>
-			</v-row>
-			<v-row>
-				<v-col class="pa-0">
-					<v-card @click="handleCardClick" @keyup.space="handleCardClick">
-						<v-progress-linear color="blue darken-3" height="4" :value="progress"></v-progress-linear>
-						<v-card-text>
-							<pre class="display-4 font-weight-bold text-center py-12">{{ cardText }}</pre>
-						</v-card-text>
-					</v-card>
-				</v-col>
-			</v-row>
-		</v-col>
-	</v-row>
+	<v-container>
+		<v-row align="center">
+			<v-col cols="auto">
+				<v-btn :to="{ name: 'DeckList' }" text>Go back</v-btn>
+			</v-col>
+			<v-col>
+				<h1>Deck Name</h1>
+			</v-col>
+		</v-row>
+		<v-row>
+			<v-col class="pa-0">
+				<v-card @click="handleCardClick" @keyup.space="handleCardClick">
+					<v-progress-linear color="blue darken-3" height="4" :value="progress"></v-progress-linear>
+					<v-card-text>
+						<pre class="display-4 font-weight-bold text-center py-12">{{ cardText }}</pre>
+					</v-card-text>
+				</v-card>
+			</v-col>
+		</v-row>
+	</v-container>
 </template>
 
 <script>
