@@ -10,6 +10,23 @@
 		</v-app-bar>
 
 		<v-content>
+			<v-container>
+				<v-row>
+					<v-col>
+						<v-alert
+							v-for="(alert, index) in this.$store.state.alerts"
+							:color="alert.color"
+							:type="alert.type"
+							:key="index"
+							dark
+							dismissible
+						>
+							{{ alert.message }}
+						</v-alert>
+					</v-col>
+				</v-row>
+			</v-container>
+
 			<router-view></router-view>
 		</v-content>
 	</v-app>
