@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 	state: {
 		alerts: [],
+		isLoading: false,
 		snackbar: {
 			message: "",
 			timeout: 3000,
@@ -25,6 +26,12 @@ export default new Vuex.Store({
 		},
 		hideSnackbar(state) {
 			state.snackbar.isVisible = false
+		},
+		isLoadingOn(state) {
+			state.isLoading = true
+		},
+		isLoadingOff(state) {
+			state.isLoading = false
 		},
 	},
 	actions: {},

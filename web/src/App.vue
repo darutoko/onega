@@ -10,6 +10,7 @@
 		</v-app-bar>
 
 		<v-content>
+			<v-progress-linear v-show="isLoading" class="mt-1" color="blue darken-3" height="4" indeterminate></v-progress-linear>
 			<v-container>
 				<v-row>
 					<v-col>
@@ -39,6 +40,9 @@ export default {
 		drawer: null,
 	}),
 	computed: {
+		isLoading() {
+			return this.$store.state.isLoading
+		},
 		isSnackbarVisible: {
 			get() {
 				return this.$store.state.snackbar.isVisible
