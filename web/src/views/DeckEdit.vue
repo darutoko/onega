@@ -105,13 +105,13 @@
 
 <script>
 import CardFormDefault from "@/components/CardFormDefault.vue"
-import CardFormYaTr from "@/components/CardFormYaTr.vue"
+import CardFormYaDi from "@/components/CardFormYaDi.vue"
 
 export default {
 	name: "DeckEdit",
 	components: {
 		CardFormDefault,
-		CardFormYaTr,
+		CardFormYaDi,
 	},
 	data() {
 		return {
@@ -168,7 +168,7 @@ export default {
 				},
 				{
 					text: "Yandex Dictionary",
-					value: "CardFormYaTr",
+					value: "CardFormYaDi",
 				},
 			],
 		}

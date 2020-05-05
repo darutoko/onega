@@ -39,7 +39,7 @@
 
 <script>
 export default {
-	name: "CardFormYaTr",
+	name: "CardFormYaDi",
 	data() {
 		return {
 			back: [],
