@@ -8,17 +8,19 @@
 
 		<v-row align="center">
 			<v-col cols="auto">
-				<v-btn class="my-auto" color="blue darken-3" dark>Add</v-btn>
+				<v-btn class="my-auto" color="blue darken-3" @click="addDeck" :loading="form.isLoading" dark>Add</v-btn>
 			</v-col>
 			<v-col>
-				<v-text-field label="Deck Name"></v-text-field>
+				<v-form ref="form">
+					<v-text-field v-model="form.input" label="Deck Name" :rules="baseRules" :disabled="form.isLoading"></v-text-field>
+				</v-form>
 			</v-col>
 		</v-row>
 
-		<v-row>
+		<v-row v-for="deck in decks" :key="deck.id">
 			<v-col>
 				<v-card>
-					<v-card-title>Deck Name</v-card-title>
+					<v-card-title>{{ deck.name }}</v-card-title>
 					<v-card-text>
 						Deck Status
 						<v-progress-linear value="80" color="green darken-3" height="25">
@@ -26,10 +28,10 @@
 						</v-progress-linear>
 					</v-card-text>
 					<v-card-actions>
-						<v-btn color="blue darken-3" :to="{ name: 'DeckMemorize', params: { id: '1' } }" dark>Memorize</v-btn>
-						<v-btn color="green darken-3" :to="{ name: 'DeckTest', params: { id: '1' } }" dark>Test</v-btn>
+						<v-btn color="blue darken-3" :to="{ name: 'DeckMemorize', params: { id: deck.id } }" dark>Memorize</v-btn>
+						<v-btn color="green darken-3" :to="{ name: 'DeckTest', params: { id: deck.id } }" dark>Test</v-btn>
 						<v-spacer></v-spacer>
-						<v-btn color="blue-grey" :to="{ name: 'DeckEdit', params: { id: '1' } }" dark>Edit</v-btn>
+						<v-btn color="blue-grey" :to="{ name: 'DeckEdit', params: { id: deck.id } }" dark>Edit</v-btn>
 						<v-btn color="red darken-3" @click="$store.commit('snackbar', Date.now())" dark>Delete</v-btn>
 					</v-card-actions>
 				</v-card>
@@ -43,8 +45,25 @@ export default {
 	name: "Decks",
 	data() {
 		return {
-			//
+			decks: [],
+			form: {
+				input: "",
+				isLoading: false,
+			},
+			baseRules: [v => !!v || "Field is required"],
 		}
+	},
+	methods: {
+		addDeck() {
+			if (!this.$refs.form.validate()) return
+			this.form.isLoading = true
+			this.$fetcher("/api/decks", "POST", { name: this.form.input })
+			this.form.isLoading = false
+			this.$refs.form.reset()
+		},
+	},
+	created() {
+		this.$fetcher("/api/decks")
 	},
 }
 </script>
