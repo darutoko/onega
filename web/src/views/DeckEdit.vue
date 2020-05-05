@@ -69,7 +69,7 @@
 						</v-container>
 					</template>
 					<template v-slot:item.successStreak="{ item }">
-						<v-progress-circular color="success" :rotate="-90" width="6" :value="(item.successStreak * 100) / deck.streakCeiling">{{
+						<v-progress-circular color="success" :rotate="-90" width="6" :value="(item.successStreak * 100) / deck.streakSize">{{
 							item.successStreak
 						}}</v-progress-circular>
 					</template>
@@ -117,7 +117,7 @@ export default {
 		return {
 			deck: {
 				name: "Deck Name",
-				streakCeiling: 7,
+				streakSize: 7,
 			},
 			dialog: {
 				show: false,
