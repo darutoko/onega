@@ -16,6 +16,7 @@ if (process.env.NODE_ENV !== "production")
 		next()
 	})
 app.use(express.static("public"))
+app.use((req, res, next) => setTimeout(() => next(), 1500))
 app.use("/api", routes.api)
 
 app.use((err, req, res, next) => {
