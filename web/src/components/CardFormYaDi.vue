@@ -6,10 +6,10 @@
 					<v-select v-model="lang" :items="langs"></v-select>
 				</v-col>
 				<v-col class="px-0">
-					<v-text-field v-model="wordField" name="word" label="Enter a word" @keyup.enter="getWord"></v-text-field>
+					<v-text-field v-model="word" name="word" label="Enter a word" @keyup.enter="getWord" :disabled="isWordLoading"></v-text-field>
 				</v-col>
 				<v-col cols="auto" class="pr-0">
-					<v-btn color="blue darken-3" dark @click="getWord">Lookup</v-btn>
+					<v-btn color="blue darken-3" dark @click="getWord" :loading="isWordLoading">Lookup</v-btn>
 				</v-col>
 			</v-row>
 			<v-row>
@@ -25,12 +25,12 @@
 			<v-row align="center">
 				<v-col cols="1">Back</v-col>
 				<v-col>
-					<v-checkbox v-model="back" v-for="row in word.tr" :label="row" :value="row" :key="row" dense></v-checkbox>
+					<v-checkbox v-model="backSelected" v-for="row in tr" :label="row" :value="row" :key="row" dense></v-checkbox>
 				</v-col>
 			</v-row>
 			<v-row>
 				<v-col>
-					<v-btn color="blue darken-3" dark @click="addCard">Add Card</v-btn>
+					<v-btn color="blue darken-3" dark @click="addCard" :loading="isCardUploading">Add Card</v-btn>
 				</v-col>
 			</v-row>
 		</v-container>
@@ -40,9 +40,15 @@
 <script>
 export default {
 	name: "CardFormYaDi",
+	props: {
+		isCardUploading: Boolean,
+	},
 	data() {
 		return {
-			back: [],
+			input: "",
+			front: "",
+			tr: [],
+			backSelected: [],
 			lang: "fr-ru",
 			langs: [
 				{
@@ -50,8 +56,8 @@ export default {
 					value: "fr-ru",
 				},
 			],
-			word: {},
-			wordField: "",
+			word: "",
+			isWordLoading: false,
 		}
 	},
 	methods: {
@@ -60,33 +66,36 @@ export default {
 			this.$emit("add-card", {
 				input: this.input,
 				front: this.front,
-				back: this.back.join("\n"),
+				back: this.back,
 				testByFront: false,
 			})
-			this.clear()
+			// this.clear()
 		},
 		clear() {
-			this.back = []
-			this.wordField = ""
-			this.word = {}
+			this.input = ""
+			this.front = ""
+			this.word = ""
+			this.tr = []
+			this.backSelected = []
 		},
-		getWord() {
-			if (!this.wordField) return
-			this.clear()
-			this.word = {
-				text: "mettre",
-				ts: "mɛtʁ",
-				tr: ["положить, поставить, ставить", "надеть, надевать", "включать, включить"],
-			}
+		async getWord() {
+			if (!this.word) return
+			var result = await this.$fetcher({
+				url: "/api/yandex_dictionary",
+				method: "get",
+				payload: { text: this.word, lang: this.lang },
+				toggle: value => (this.isWordLoading = value),
+			})
+			if (!result) return
+			this.word = ""
+			this.input = result.text
+			this.front = `${result.text}\n[${result.ts}]`
+			this.tr = result.tr
 		},
 	},
 	computed: {
-		input() {
-			return this.word.text || ""
-		},
-		front() {
-			if (!this.word.text) return ""
-			return `${this.word.text}\n[${this.word.ts}]`
+		back() {
+			return this.backSelected.join("\n")
 		},
 	},
 }
