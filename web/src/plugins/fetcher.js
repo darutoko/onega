@@ -1,4 +1,6 @@
 export default {
+	// toggle: function to change spinner/loader status
+	// autofill: flag, if true - use response data object to fill instance data
 	install(Vue, settings) {
 		Vue.prototype.$fetcher = async function(options) {
 			var { url, payload, toggle, autofill } = options
