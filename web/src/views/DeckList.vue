@@ -32,7 +32,7 @@
 						<v-btn color="green darken-3" :to="{ name: 'DeckTest', params: { id: deck.id } }" dark>Test</v-btn>
 						<v-spacer></v-spacer>
 						<v-btn color="blue-grey" :to="{ name: 'DeckEdit', params: { id: deck.id } }" dark>Edit</v-btn>
-						<v-btn color="red darken-3" @click="$store.commit('snackbar', Date.now())" dark>Delete</v-btn>
+						<v-btn color="red darken-3" @click="deleteDeck" dark>Delete</v-btn>
 					</v-card-actions>
 				</v-card>
 			</v-col>
@@ -56,14 +56,24 @@ export default {
 	methods: {
 		addDeck() {
 			if (!this.$refs.form.validate()) return
-			this.form.isLoading = true
-			this.$fetcher("/api/decks", "POST", { name: this.form.input })
-			this.form.isLoading = false
+			this.$fetcher({
+				url: "/api/decks",
+				method: "post",
+				autofill: true,
+				payload: { name: this.form.input },
+				toggle: value => (this.form.isLoading = value),
+			})
 			this.$refs.form.reset()
+		},
+		async deleteDeck() {
+			//
+			var result = await this.$fetcher({ url: "/api" })
+			console.log(result)
+			console.log(!!result)
 		},
 	},
 	created() {
-		this.$fetcher("/api/decks")
+		this.$fetcher({ url: "/api/decks", autofill: true })
 	},
 }
 </script>
