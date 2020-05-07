@@ -33,6 +33,9 @@ export default new Vuex.Store({
 		isLoadingOff(state) {
 			state.isLoading = false
 		},
+		setLoading(state, value) {
+			state.isLoading = value
+		},
 	},
 	actions: {},
 	modules: {},
