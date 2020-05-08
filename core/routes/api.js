@@ -35,7 +35,7 @@ router.get("/decks/:id/memorize", async (req, res, next) => {
 
 router.post("/cards", async (req, res, next) => {
 	await db.card.create(req.body)
-	var result = db.card.getAll({ deckId: req.body.deckId })
+	var result = await db.card.getAll({ deckId: req.body.deckId })
 	res.json({ cards: result.rows })
 })
 
