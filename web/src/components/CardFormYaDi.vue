@@ -88,7 +88,7 @@ export default {
 			})
 			if (!result) return
 			this.word = ""
-			this.input = result.text
+			this.input = result.text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 			this.front = `${result.text}\n[${result.ts}]`
 			this.tr = result.tr
 		},
