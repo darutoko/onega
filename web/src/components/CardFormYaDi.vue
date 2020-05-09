@@ -62,14 +62,14 @@ export default {
 	},
 	methods: {
 		addCard() {
-			if (!this.input || !this.front || this.back.length < 1) return
+			if (!this.input || !this.front || this.backSelected.length < 1) return
 			this.$emit("add-card", {
 				input: this.input,
 				front: this.front,
-				back: this.back,
+				back: this.backSelected.join("\n"),
 				testByFront: false,
 			})
-			// this.clear()
+			this.clear()
 		},
 		clear() {
 			this.input = ""
@@ -93,10 +93,6 @@ export default {
 			this.tr = result.tr
 		},
 	},
-	computed: {
-		back() {
-			return this.backSelected.join("\n")
-		},
-	},
+	// computed: {},
 }
 </script>
