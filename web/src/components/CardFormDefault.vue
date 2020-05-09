@@ -1,5 +1,5 @@
 <template>
-	<v-form ref="form">
+	<v-form ref="form" :disabled="isCardUploading">
 		<v-container fluid>
 			<v-row>
 				<v-col class="pa-0">
@@ -23,7 +23,7 @@
 			</v-row>
 			<v-row>
 				<v-col cols="auto">
-					<v-btn color="blue darken-3" dark @click.prevent="submitForm">Add Card</v-btn>
+					<v-btn color="blue darken-3" dark @click.prevent="submitForm" :loading="isCardUploading">Add Card</v-btn>
 				</v-col>
 				<v-col>
 					<v-btn color="red darken-3" @click.prevent="clearForm" dark>Clear</v-btn>
@@ -36,6 +36,9 @@
 <script>
 export default {
 	name: "CardFormDefault",
+	props: {
+		isCardUploading: Boolean,
+	},
 	data() {
 		return {
 			input: "",
