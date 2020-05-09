@@ -29,8 +29,12 @@ router.get("/decks/:id", async (req, res, next) => {
 })
 
 router.get("/decks/:id/memorize", async (req, res, next) => {
-	var result = await db.card.getAll({ deckId: req.params.id })
-	res.json({ cards: result.rows })
+	var data = {}
+	var result = await db.deck.get({ id: req.params.id })
+	data.deck = result.rows[0]
+	result = await db.card.getAll({ deckId: req.params.id })
+	data.cards = result.rows
+	res.json(data)
 })
 
 router.post("/cards", async (req, res, next) => {

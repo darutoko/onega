@@ -5,7 +5,7 @@
 				<v-btn :to="{ name: 'DeckList' }" text>Go back</v-btn>
 			</v-col>
 			<v-col>
-				<h1>Deck Name</h1>
+				<h1>{{ deck.name }}</h1>
 			</v-col>
 		</v-row>
 		<v-row>
@@ -13,7 +13,7 @@
 				<v-card @click="handleCardClick" @keyup.space="handleCardClick">
 					<v-progress-linear color="blue darken-3" height="4" :value="progress"></v-progress-linear>
 					<v-card-text>
-						<pre class="display-4 font-weight-bold text-center py-12">{{ cardText }}</pre>
+						<pre class="display-4 text-center py-12" :class="cardClass">{{ cardText }}</pre>
 					</v-card-text>
 				</v-card>
 			</v-col>
@@ -27,33 +27,24 @@ export default {
 	// components: {},
 	data() {
 		return {
-			cards: [
-				{
-					id: 1,
-					input: "input 1",
-					front: "front 1",
-					back: "back 1",
-				},
-				{
-					id: 2,
-					input: "input 2",
-					front: "front 2",
-					back: "back 2",
-				},
-				{
-					id: 3,
-					input: "input 3",
-					front: "front 3",
-					back: "back 3",
-				},
-			],
+			deck: { name: "" },
+			cards: [],
 			cardState: "front",
 			cardIndex: 0,
 		}
 	},
 	computed: {
+		cardClass() {
+			return {
+				"font-weight-bold": this.cardState === "front",
+				"font-weight-lightd": this.cardState === "back",
+			}
+		},
 		cardText() {
-			if (this.cardIndex == this.cards.length) return "All Done!"
+			if (this.cardIndex >= this.cards.length) {
+				setTimeout(() => this.$router.push({ name: "DeckList" }), 500)
+				return "All Done!"
+			}
 			return this.cards[this.cardIndex][this.cardState]
 		},
 		progress() {
@@ -74,7 +65,9 @@ export default {
 			this.cardState = "front"
 		},
 	},
-	// created() {},
+	async created() {
+		await this.$fetcher({ url: "/api/decks/" + this.$route.params.id + "/memorize", autofill: true })
+	},
 	// mounted() {},
 }
 </script>
