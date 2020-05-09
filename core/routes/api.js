@@ -39,6 +39,22 @@ router.post("/cards", async (req, res, next) => {
 	res.json({ cards: result.rows })
 })
 
+router.put("/cards", async (req, res, next) => {
+	await db.card.update({ ids: req.body.ids, newDeckId: req.body.newDeckId })
+	var result = await db.card.getAll({ deckId: req.body.deckId })
+	res.json({ cards: result.rows })
+})
+
+router.delete("/cards", async (req, res, next) => {
+	await db.card.delete({ ids: req.body.ids })
+	var result = await db.card.getAll({ deckId: req.body.deckId })
+	res.json({ cards: result.rows })
+})
+
+// router.post("/", async (req, res, next) => {
+// 	res.json({})
+// })
+
 router.get("/yandex_dictionary", async (req, res, next) => {
 	var def = await getYandexDictionary({ text: req.query.text, lang: req.query.lang })
 	def = def.def[0]
@@ -61,10 +77,6 @@ router.get("/yandex_dictionary", async (req, res, next) => {
 	console.log(data)
 	res.json(data)
 })
-
-// router.post("/", async (req, res, next) => {
-// 	res.json({})
-// })
 
 var getYandexDictionary = params =>
 	new Promise((resolve, reject) => {

@@ -5,7 +5,7 @@
 				<v-btn :to="{ name: 'DeckList' }" text>Go back</v-btn>
 			</v-col>
 			<v-col>
-				<h1>Deck Name</h1>
+				<h1>{{ deck.name }}</h1>
 			</v-col>
 		</v-row>
 
@@ -27,7 +27,7 @@
 									</v-row>
 									<v-row>
 										<v-col class="pa-0">
-											<component :is="cardForm" @add-card="addCard"></component>
+											<component :is="cardForm" @add-card="addCard" :is-card-uploading="isLoading"></component>
 										</v-col>
 									</v-row>
 								</v-container>
@@ -85,16 +85,17 @@
 						</v-card-title>
 						<v-divider class="mb-4"></v-divider>
 						<v-card-text v-if="dialog.type === 'delete'">
-							Delete items?
+							Delete <strong>{{ this.selectedCards.length }}</strong> cards?
 						</v-card-text>
 						<v-card-text v-else-if="dialog.type === 'move'">
-							Move items?
+							Move <strong>{{ this.selectedCards.length }}</strong> cards to:
+							<v-select v-model="dialog.selected" :items="dialog.select"></v-select>
 						</v-card-text>
 						<v-divider></v-divider>
 						<v-card-actions>
-							<v-btn color="red darken-3" @click="confirmDialog" text>Ok</v-btn>
+							<v-btn color="red darken-3" @click="confirmDialog" :loading="dialog.isLoading" text>Ok</v-btn>
 							<v-spacer></v-spacer>
-							<v-btn @click="hideDialog" text>Cancel</v-btn>
+							<v-btn @click="hideDialog" :disabled="dialog.isLoading" text>Cancel</v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-dialog>
@@ -115,13 +116,14 @@ export default {
 	},
 	data() {
 		return {
-			deck: {
-				name: "Deck Name",
-				streakSize: 7,
-			},
+			isLoading: false,
+			deck: { name: "" },
 			dialog: {
 				show: false,
 				type: "move",
+				isLoading: false,
+				select: [],
+				selected: "",
 			},
 			headers: [
 				{
@@ -132,34 +134,19 @@ export default {
 				},
 				{
 					text: "Streak",
-					value: "successStreak",
+					value: "streak",
 					sortable: false,
 					width: "1%",
 				},
 				{
 					text: "Last test",
-					value: "testedAt",
+					value: "updatedAt",
 					sortable: false,
 					width: "1%",
 				},
 			],
 			selectedCards: [],
-			cards: [
-				{
-					id: 1,
-					input: "input 1",
-					testsCount: 5,
-					successStreak: 7,
-					testedAt: 12122112,
-				},
-				{
-					id: 2,
-					input: "input 2",
-					testsCount: 5,
-					successStreak: 2,
-					testedAt: 12122112,
-				},
-			],
+			cards: [],
 			cardForm: "CardFormDefault",
 			cardForms: [
 				{
@@ -179,30 +166,54 @@ export default {
 		},
 	},
 	methods: {
-		addCard(card) {
-			this.cards.push({
-				id: this.cards.length + 1,
-				testsCount: 5,
-				successStreak: 2,
-				testedAt: 12122112,
-				...card,
+		async addCard(card) {
+			await this.$fetcher({
+				url: "/api/cards",
+				method: "post",
+				autofill: true,
+				payload: { deckId: this.$route.params.id, ...card },
+				toggle: value => (this.isLoading = value),
 			})
 		},
-		confirmDialog() {
-			console.log(this.selectedCards)
-			if (this.dialog.type === "delete") this.deleteCards()
-			else if (this.dialog.type === "move") this.moveCards()
+		async confirmDialog() {
+			if (this.dialog.type === "delete") await this.deleteCards()
+			else if (this.dialog.type === "move") await this.moveCards()
 			this.hideDialog()
 		},
-		deleteCards() {},
+		async deleteCards() {
+			await this.$fetcher({
+				url: "/api/cards",
+				method: "delete",
+				autofill: true,
+				payload: { deckId: this.$route.params.id, ids: this.selectedCards.map(c => c.id) },
+				toggle: value => (this.dialog.isLoading = value),
+			})
+		},
 		hideDialog() {
 			this.dialog.show = false
 		},
-		moveCards() {},
-		showDialog(event) {
+		async moveCards() {
+			await this.$fetcher({
+				url: "/api/cards",
+				method: "put",
+				autofill: true,
+				payload: { deckId: this.$route.params.id, newDeckId: this.dialog.selected, ids: this.selectedCards.map(c => c.id) },
+				toggle: value => (this.dialog.isLoading = value),
+			})
+		},
+		async showDialog(event) {
 			this.dialog.type = event.currentTarget.dataset.dialogType
 			this.dialog.show = true
+			if (this.dialog.type === "move") {
+				var result = await this.$fetcher({ url: "/api/decks", toggle: value => (this.dialog.isLoading = value) })
+				result = result.decks.filter(d => d.id != this.$route.params.id).map(d => ({ text: d.name, value: d.id }))
+				this.dialog.select = result
+				this.dialog.selected = result[0].value
+			}
 		},
+	},
+	async created() {
+		await this.$fetcher({ url: "/api/decks/" + this.$route.params.id, autofill: true })
 	},
 }
 </script>
