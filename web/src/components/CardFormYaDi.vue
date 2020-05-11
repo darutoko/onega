@@ -66,7 +66,7 @@ export default {
 			this.$emit("add-card", {
 				input: this.input,
 				front: this.front,
-				back: this.backSelected.join("\n"),
+				back: this.getBack(),
 				testByFront: false,
 			})
 			this.clear()
@@ -77,6 +77,10 @@ export default {
 			this.word = ""
 			this.tr = []
 			this.backSelected = []
+		},
+		getBack() {
+			if (this.backSelected.length == 1) return this.backSelected[0]
+			return this.backSelected.map((s, i) => `${i + 1}. ${s}`).join("\n")
 		},
 		async getWord() {
 			if (!this.word) return
