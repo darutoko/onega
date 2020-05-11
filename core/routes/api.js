@@ -14,7 +14,7 @@ router.get("/decks", async (req, res, next) => {
 })
 
 router.post("/decks", async (req, res, next) => {
-	// await db.deck.create({ name: req.body.name })
+	await db.deck.create({ name: req.body.name })
 	var result = await db.deck.getAll()
 	res.json({ decks: result.rows })
 })
