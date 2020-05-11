@@ -12,7 +12,13 @@
 			</v-col>
 			<v-col>
 				<v-form ref="form">
-					<v-text-field v-model="form.input" label="Deck Name" :rules="baseRules" :disabled="form.isLoading"></v-text-field>
+					<v-text-field
+						v-model="form.input"
+						label="Deck Name"
+						@keyup.enter.prevent="addDeck"
+						:rules="baseRules"
+						:disabled="form.isLoading"
+					></v-text-field>
 				</v-form>
 			</v-col>
 		</v-row>
