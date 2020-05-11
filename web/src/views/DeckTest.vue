@@ -5,7 +5,7 @@
 				<v-btn :to="{ name: 'DeckList' }" text>Go back</v-btn>
 			</v-col>
 			<v-col>
-				<h1>Deck Name</h1>
+				<h1>{{ deck.name }}</h1>
 			</v-col>
 		</v-row>
 
@@ -40,29 +40,8 @@ export default {
 	// components: {},
 	data() {
 		return {
-			cards: [
-				{
-					id: 1,
-					input: "input 1",
-					front: "front 1",
-					back: "back 1",
-					testByFront: false,
-				},
-				{
-					id: 2,
-					input: "input 2",
-					front: "front 2",
-					back: "back 2",
-					testByFront: false,
-				},
-				{
-					id: 3,
-					input: "input 3",
-					front: "front 3",
-					back: "back 3",
-					testByFront: true,
-				},
-			],
+			deck: { name: "" },
+			cards: [],
 			cardIndex: 0,
 			testInput: "",
 			bannerClass: {
@@ -73,13 +52,12 @@ export default {
 	},
 	computed: {
 		cardText() {
-			if (this.cardIndex == this.cards.length) {
-				setTimeout(() => {
-					this.$router.push({ name: "DeckList" })
-				}, 500)
+			if (this.cards.length == 0) return ""
+			if (this.cardIndex >= this.cards.length) {
+				setTimeout(() => this.$router.push({ name: "DeckList" }), 500)
 				return "All Done!"
 			}
-			let card = this.cards[this.cardIndex]
+			var card = this.cards[this.cardIndex]
 			if (card.testByFront) return card.front
 			else return card.back
 		},
@@ -90,18 +68,23 @@ export default {
 	// watch: {},
 	methods: {
 		handleInput() {
-			let isTestPasses = this.testInput === this.cards[this.cardIndex].input
-			this.bannerText = this.cards[this.cardIndex].input
+			var card = this.cards[this.cardIndex]
+			var isTestPassed = this.testInput === card.input
+			if (!card.isStreakUpdated) this.updateCardStreak(card, isTestPassed)
+
+			if (isTestPassed) {
+				this.cardIndex++
+				this.testInput = ""
+			}
+
+			this.bannerText = card.input
 			this.bannerClass = {
-				red: !isTestPasses,
-				green: isTestPasses,
+				red: !isTestPassed,
+				green: isTestPassed,
 				white: false,
 			}
+
 			setTimeout(() => {
-				if (isTestPasses) {
-					this.cardIndex++
-					this.testInput = ""
-				}
 				this.bannerText = "!"
 				this.bannerClass = {
 					red: false,
@@ -110,8 +93,19 @@ export default {
 				}
 			}, 3000)
 		},
+		updateCardStreak(card, isTestPassed) {
+			this.$fetcher({
+				url: "/api/cards/" + card.id,
+				method: "put",
+				payload: { isTestPassed },
+				toggle: value => {},
+			})
+			card.isStreakUpdated = true
+		},
 	},
-	// created() {},
+	async created() {
+		await this.$fetcher({ url: "/api/decks/" + this.$route.params.id + "/test", autofill: true })
+	},
 	// mounted() {},
 }
 </script>

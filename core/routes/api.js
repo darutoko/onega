@@ -37,6 +37,15 @@ router.get("/decks/:id/memorize", async (req, res, next) => {
 	res.json(data)
 })
 
+router.get("/decks/:id/test", async (req, res, next) => {
+	var data = {}
+	var result = await db.deck.get({ id: req.params.id })
+	data.deck = result.rows[0]
+	result = await db.card.getAll({ deckId: req.params.id })
+	data.cards = result.rows
+	res.json(data)
+})
+
 router.post("/cards", async (req, res, next) => {
 	await db.card.create(req.body)
 	var result = await db.card.getAll({ deckId: req.body.deckId })
@@ -44,7 +53,7 @@ router.post("/cards", async (req, res, next) => {
 })
 
 router.put("/cards", async (req, res, next) => {
-	await db.card.update({ ids: req.body.ids, newDeckId: req.body.newDeckId })
+	await db.card.updateDeck({ ids: req.body.ids, newDeckId: req.body.newDeckId })
 	var result = await db.card.getAll({ deckId: req.body.deckId })
 	res.json({ cards: result.rows })
 })
@@ -53,6 +62,11 @@ router.delete("/cards", async (req, res, next) => {
 	await db.card.delete({ ids: req.body.ids })
 	var result = await db.card.getAll({ deckId: req.body.deckId })
 	res.json({ cards: result.rows })
+})
+
+router.put("/cards/:id", async (req, res, next) => {
+	await db.card.updateStreak({ id: req.params.id, isTestPassed: req.body.isTestPassed })
+	res.json({})
 })
 
 // router.post("/", async (req, res, next) => {

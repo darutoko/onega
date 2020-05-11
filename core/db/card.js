@@ -13,8 +13,14 @@ module.exports = {
 			deckId,
 		])
 	},
-	update({ ids, newDeckId }) {
+	updateDeck({ ids, newDeckId }) {
 		return pg.query('update "card" set "deckId" = $1 where "id" = any ($2)', [newDeckId, ids])
+	},
+	updateStreak({ id, isTestPassed }) {
+		var value
+		if (isTestPassed) value = '"streak"+1'
+		else value = 0
+		return pg.query('update "card" set "streak" = ' + value + ' where "id" = $1', [id])
 	},
 	delete({ ids }) {
 		return pg.query('delete from "card" where "id" = any ($1)', [ids])
