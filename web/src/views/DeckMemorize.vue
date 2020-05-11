@@ -41,6 +41,7 @@ export default {
 			}
 		},
 		cardText() {
+			if (this.cards.length == 0) return ""
 			if (this.cardIndex >= this.cards.length) {
 				setTimeout(() => this.$router.push({ name: "DeckList" }), 500)
 				return "All Done!"
