@@ -68,10 +68,13 @@
 							</v-row>
 						</v-container>
 					</template>
-					<template v-slot:item.successStreak="{ item }">
-						<v-progress-circular color="success" :rotate="-90" width="6" :value="(item.successStreak * 100) / deck.streakSize">{{
-							item.successStreak
+					<template v-slot:item.streak="{ item }">
+						<v-progress-circular color="success" :rotate="-90" width="6" :value="(item.streak * 100) / deck.streakSize">{{
+							item.streak
 						}}</v-progress-circular>
+					</template>
+					<template v-slot:item.updatedAt="{ item }">
+						{{ formatDate(item.updatedAt) }}
 					</template>
 				</v-data-table>
 			</v-col>
@@ -130,19 +133,19 @@ export default {
 					text: "Input",
 					value: "input",
 					sortable: false,
-					width: "97%",
+					width: "88%",
 				},
 				{
 					text: "Streak",
 					value: "streak",
-					sortable: false,
-					width: "1%",
+					sortable: true,
+					width: "5%",
 				},
 				{
 					text: "Last test",
 					value: "updatedAt",
-					sortable: false,
-					width: "1%",
+					sortable: true,
+					width: "7%",
 				},
 			],
 			selectedCards: [],
@@ -210,6 +213,15 @@ export default {
 				this.dialog.select = result
 				this.dialog.selected = result[0].value
 			}
+		},
+		formatDate(updatedAt) {
+			var date = new Date(updatedAt)
+			var day = date.getDate()
+			var month = date.getMonth() + 1
+			var year = date.getFullYear()
+			if (day < 10) day = "0" + day
+			if (month < 10) month = "0" + month
+			return year + "-" + month + "-" + day
 		},
 	},
 	async created() {
