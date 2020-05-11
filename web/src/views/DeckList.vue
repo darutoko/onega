@@ -11,14 +11,8 @@
 				<v-btn class="my-auto" color="blue darken-3" @click="addDeck" :loading="form.isLoading" dark>Add</v-btn>
 			</v-col>
 			<v-col>
-				<v-form ref="form">
-					<v-text-field
-						v-model="form.input"
-						label="Deck Name"
-						@keyup.enter.prevent="addDeck"
-						:rules="baseRules"
-						:disabled="form.isLoading"
-					></v-text-field>
+				<v-form ref="form" @submit.prevent="addDeck">
+					<v-text-field v-model="form.input" label="Deck Name" :rules="baseRules" :disabled="form.isLoading"></v-text-field>
 				</v-form>
 			</v-col>
 		</v-row>
