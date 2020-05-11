@@ -19,31 +19,25 @@ router.post("/decks", async (req, res, next) => {
 	res.json({ decks: result.rows })
 })
 
-router.get("/decks/:id", async (req, res, next) => {
-	var data = {}
+router.use("/decks/:id", async (req, res, next) => {
 	var result = await db.deck.get({ id: req.params.id })
-	data.deck = result.rows[0]
-	result = await db.card.getAll({ deckId: req.params.id })
-	data.cards = result.rows
-	res.json(data)
+	res.locals.deck = result.rows[0]
+	next()
+})
+
+router.get("/decks/:id", async (req, res, next) => {
+	var result = await db.card.getAll({ deckId: req.params.id })
+	res.json({ deck: res.locals.deck, cards: result.rows })
 })
 
 router.get("/decks/:id/memorize", async (req, res, next) => {
-	var data = {}
-	var result = await db.deck.get({ id: req.params.id })
-	data.deck = result.rows[0]
-	result = await db.card.getAll({ deckId: req.params.id })
-	data.cards = result.rows
-	res.json(data)
+	var result = await db.card.getAll({ deckId: req.params.id })
+	res.json({ deck: res.locals.deck, cards: result.rows })
 })
 
 router.get("/decks/:id/test", async (req, res, next) => {
-	var data = {}
-	var result = await db.deck.get({ id: req.params.id })
-	data.deck = result.rows[0]
-	result = await db.card.getAll({ deckId: req.params.id })
-	data.cards = result.rows
-	res.json(data)
+	var result = await db.card.getAll({ deckId: req.params.id })
+	res.json({ deck: res.locals.deck, cards: result.rows })
 })
 
 router.post("/cards", async (req, res, next) => {
