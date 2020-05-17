@@ -31,12 +31,12 @@ router.get("/decks/:id", async (req, res, next) => {
 })
 
 router.get("/decks/:id/memorize", async (req, res, next) => {
-	var result = await db.card.getAll({ deckId: req.params.id })
+	var result = await db.card.getShuffled({ deckId: req.params.id, limit: res.locals.deck.memorizeSize })
 	res.json({ deck: res.locals.deck, cards: result.rows })
 })
 
 router.get("/decks/:id/test", async (req, res, next) => {
-	var result = await db.card.getAll({ deckId: req.params.id })
+	var result = await db.card.getShuffled({ deckId: req.params.id, limit: res.locals.deck.testSize })
 	res.json({ deck: res.locals.deck, cards: result.rows })
 })
 

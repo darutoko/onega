@@ -4,6 +4,9 @@ module.exports = {
 	getAll({ deckId }) {
 		return pg.query('select * from "card" where "deckId" = $1;', [deckId])
 	},
+	getShuffled({ deckId, limit }) {
+		return pg.query('select * from "card" where "deckId" = $1 order by random() limit $2;', [deckId, limit])
+	},
 	create({ input, front, back, testByFront, deckId }) {
 		return pg.query('insert into "card" ("input", "front", "back", "testByFront", "deckId", "streak") values ($1, $2, $3, $4, $5, 0);', [
 			input,
