@@ -6,7 +6,7 @@ module.exports = {
 	},
 	getAll() {
 		return pg.query(
-			'select "deck".*, count("card"."id") as "totalCards", count("card"."id") filter (where "card"."streak" > "deck"."streakSize") as "memorizedCards" from "deck" left join "card" on "deck"."id" = "card"."deckId" group by "deck"."id";'
+			'select "deck".*, count("card"."id") as "totalCards", count("card"."id") filter (where "card"."streak" > 0) as "memorizedCards" from "deck" left join "card" on "deck"."id" = "card"."deckId" group by "deck"."id";'
 		)
 	},
 	create(params) {

@@ -22,11 +22,11 @@
 				<v-card>
 					<v-card-title>{{ deck.name }}</v-card-title>
 					<v-card-text>
-						Deck Status
+						Deck status since last test
 						<v-progress-linear
 							:value="Math.floor((deck.memorizedCards / deck.totalCards) * 100)"
 							color="green darken-3"
-							background-color="grey"
+							background-color="red darken-2"
 							height="25"
 						>
 							<strong class="white--text">{{ deck.memorizedCards }}/{{ deck.totalCards }}</strong>
