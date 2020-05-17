@@ -69,6 +69,14 @@ router.put("/cards/:id", async (req, res, next) => {
 
 router.get("/yandex_dictionary", async (req, res, next) => {
 	var def = await getYandexDictionary({ text: req.query.text, lang: req.query.lang })
+	console.log(def)
+	if (!def.def.length) {
+		res.locals.error = {
+			status: 200,
+			message: `Word "${req.query.text}" was not found for language ${req.query.lang}`,
+		}
+		return next(new Error(res.locals.error))
+	}
 	def = def.def[0]
 	// Prepend nouns with masculine/feminine indefinite articles
 	if (def.pos === "noun")
@@ -86,7 +94,6 @@ router.get("/yandex_dictionary", async (req, res, next) => {
 		// Unite each translation and up to 3 of it synonyms in to separate string
 		data.tr.push([tr.text, ...tr.syn.slice(0, 3).map(s => s.text)].join(", "))
 	}
-	console.log(data)
 	res.json(data)
 })
 

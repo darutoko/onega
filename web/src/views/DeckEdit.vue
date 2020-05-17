@@ -40,7 +40,7 @@
 
 		<v-row>
 			<v-col>
-				<v-data-table :headers="headers" :items="cards" v-model="selectedCards" show-select>
+				<v-data-table :headers="headers" :items="cards" v-model="selectedCards" sort-by="input" show-select>
 					<template v-slot:top>
 						<v-container fluid>
 							<v-row>
@@ -132,7 +132,7 @@ export default {
 				{
 					text: "Input",
 					value: "input",
-					sortable: false,
+					sortable: true,
 					width: "88%",
 				},
 				{
