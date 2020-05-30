@@ -20,6 +20,9 @@ export default new Vuex.Store({
 		success(state, message) {
 			state.alerts.push({ color: "green darken-3", type: "success", message })
 		},
+		info(state, message) {
+			state.alerts.push({ color: "blue darken-3", type: "info", message })
+		},
 		snackbar(state, message) {
 			state.snackbar.message = message
 			state.snackbar.isVisible = true
