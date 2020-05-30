@@ -19,35 +19,18 @@
 
 		<v-row v-for="deck in decks" :key="deck.id">
 			<v-col>
-				<v-card>
-					<v-card-title>{{ deck.name }}</v-card-title>
-					<v-card-text>
-						Deck status since last test
-						<v-progress-linear
-							:value="Math.floor((deck.memorizedCards / deck.totalCards) * 100)"
-							color="green darken-3"
-							background-color="red darken-2"
-							height="25"
-						>
-							<strong class="white--text">{{ deck.memorizedCards }}/{{ deck.totalCards }}</strong>
-						</v-progress-linear>
-					</v-card-text>
-					<v-card-actions>
-						<v-btn color="blue darken-3" :to="{ name: 'DeckMemorize', params: { id: deck.id } }" dark>Memorize</v-btn>
-						<v-btn color="green darken-3" :to="{ name: 'DeckTest', params: { id: deck.id } }" dark>Test</v-btn>
-						<v-spacer></v-spacer>
-						<v-btn color="blue-grey" :to="{ name: 'DeckEdit', params: { id: deck.id } }" dark>Edit</v-btn>
-						<v-btn color="red darken-3" @click="deleteDeck" dark>Delete</v-btn>
-					</v-card-actions>
-				</v-card>
+				<Deck v-bind="deck" @delete-deck="deleteDeck"></Deck>
 			</v-col>
 		</v-row>
 	</v-container>
 </template>
 
 <script>
+import Deck from "@/components/Deck.vue"
+
 export default {
 	name: "Decks",
+	components: { Deck },
 	data() {
 		return {
 			decks: [],
@@ -70,7 +53,7 @@ export default {
 			})
 			this.$refs.form.reset()
 		},
-		async deleteDeck() {
+		async deleteDeck(id) {
 			//
 			var result = await this.$fetcher({ url: "/api" })
 			console.log(result)
