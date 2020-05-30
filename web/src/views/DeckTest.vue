@@ -61,7 +61,7 @@ export default {
 		cardText() {
 			if (this.cards.length == 0) return ""
 			if (this.cardIndex >= this.cards.length) {
-				setTimeout(() => this.$router.push({ name: "DeckList" }), 500)
+				this.goBack(500)
 				return "All Done!"
 			}
 			var card = this.cards[this.cardIndex]
@@ -74,6 +74,9 @@ export default {
 	},
 	// watch: {},
 	methods: {
+		goBack(ms) {
+			setTimeout(() => this.$router.push({ name: "DeckList" }), ms)
+		},
 		handleInput() {
 			var card = this.cards[this.cardIndex]
 			var isTestPassed = this.testInput === card.input
@@ -111,7 +114,15 @@ export default {
 		},
 	},
 	async created() {
-		await this.$fetcher({ url: "/api/decks/" + this.$route.params.id + "/test", autofill: true })
+		await this.$fetcher({
+			url: "/api/decks/" + this.$route.params.id + "/cards",
+			autofill: true,
+			payload: { limit: "test", subset: this.$route.query.subset },
+		})
+		if (!this.cards.length) {
+			this.$store.commit("info", `There are no cards recieved for deck "${this.deck.name}"`)
+			this.goBack(200)
+		}
 	},
 	// mounted() {},
 }

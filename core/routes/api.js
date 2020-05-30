@@ -30,13 +30,9 @@ router.get("/decks/:id", async (req, res, next) => {
 	res.json({ deck: res.locals.deck, cards: result.rows })
 })
 
-router.get("/decks/:id/memorize", async (req, res, next) => {
-	var result = await db.card.getShuffled({ deckId: req.params.id, limit: res.locals.deck.memorizeSize })
-	res.json({ deck: res.locals.deck, cards: result.rows })
-})
-
-router.get("/decks/:id/test", async (req, res, next) => {
-	var result = await db.card.getShuffled({ deckId: req.params.id, limit: res.locals.deck.testSize })
+router.get("/decks/:id/cards", async (req, res, next) => {
+	var limit = req.query.limit === "memorize" ? res.locals.deck.memorizeSize : res.locals.deck.testSize
+	var result = await db.card.getSubset({ limit, deckId: req.params.id, subset: req.query.subset, streakSize: res.locals.deck.streakSize })
 	res.json({ deck: res.locals.deck, cards: result.rows })
 })
 

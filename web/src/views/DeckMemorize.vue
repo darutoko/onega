@@ -43,7 +43,7 @@ export default {
 		cardText() {
 			if (this.cards.length == 0) return ""
 			if (this.cardIndex >= this.cards.length) {
-				setTimeout(() => this.$router.push({ name: "DeckList" }), 500)
+				this.goBack(500)
 				return "All Done!"
 			}
 			return this.cards[this.cardIndex][this.cardState]
@@ -54,6 +54,9 @@ export default {
 	},
 	// watch: {},
 	methods: {
+		goBack(ms) {
+			setTimeout(() => this.$router.push({ name: "DeckList" }), ms)
+		},
 		handleCardClick() {
 			if (this.cardState === "front") this.flipCard()
 			else if (this.cardState === "back") this.nextCard()
@@ -67,7 +70,15 @@ export default {
 		},
 	},
 	async created() {
-		await this.$fetcher({ url: "/api/decks/" + this.$route.params.id + "/memorize", autofill: true })
+		await this.$fetcher({
+			url: "/api/decks/" + this.$route.params.id + "/cards",
+			autofill: true,
+			payload: { limit: "memorize", subset: this.$route.query.subset },
+		})
+		if (!this.cards.length) {
+			this.$store.commit("info", `There are no cards recieved for deck "${this.deck.name}"`)
+			this.goBack(200)
+		}
 	},
 	// mounted() {},
 }
