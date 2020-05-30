@@ -28,7 +28,14 @@
 
 		<v-row>
 			<v-col>
-				<v-text-field v-model="testInput" label="Input" placeholder="Input" @keyup.enter="handleInput" autofocus></v-text-field>
+				<v-text-field
+					v-model="testInput"
+					label="Input"
+					placeholder="Input"
+					@keyup.enter="handleInput"
+					autocomplete="off"
+					autofocus
+				></v-text-field>
 			</v-col>
 		</v-row>
 	</v-container>
