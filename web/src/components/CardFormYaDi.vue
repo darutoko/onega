@@ -6,10 +6,22 @@
 					<v-select v-model="lang" :items="langs"></v-select>
 				</v-col>
 				<v-col class="px-0">
-					<v-text-field v-model="word" name="word" label="Enter a word" @keyup.enter="getWord" :disabled="isWordLoading"></v-text-field>
+					<v-text-field
+						v-model="word"
+						name="word"
+						label="Enter a word"
+						@keyup.enter="getWord"
+						:disabled="isWordLoading"
+						autocomplete="off"
+					></v-text-field>
 				</v-col>
 				<v-col cols="auto" class="pr-0">
 					<v-btn color="blue darken-3" dark @click="getWord" :loading="isWordLoading">Lookup</v-btn>
+				</v-col>
+			</v-row>
+			<v-row>
+				<v-col>
+					<v-select v-model="defSelected" :items="defOptions"></v-select>
 				</v-col>
 			</v-row>
 			<v-row>
@@ -45,10 +57,9 @@ export default {
 	},
 	data() {
 		return {
-			input: "",
-			front: "",
-			tr: [],
 			backSelected: [],
+			def: [],
+			defSelected: "",
 			lang: "fr-ru",
 			langs: [
 				{
@@ -59,6 +70,25 @@ export default {
 			word: "",
 			isWordLoading: false,
 		}
+	},
+	computed: {
+		defOptions() {
+			var options = this.def.map((def, i) => ({ text: `${i + 1}. ${def.pos}`, value: i }))
+			if (options.length) this.defSelected = 0
+			return options
+		},
+		input() {
+			if (!this.def.length || this.defSelected === "") return ""
+			return this.def[this.defSelected].text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+		},
+		front() {
+			if (!this.def.length || this.defSelected === "") return ""
+			return `${this.def[this.defSelected].text}\n[${this.def[this.defSelected].ts}]`
+		},
+		tr() {
+			if (!this.def.length || this.defSelected === "") return ""
+			return this.def[this.defSelected].tr
+		},
 	},
 	methods: {
 		addCard() {
@@ -72,11 +102,10 @@ export default {
 			this.clear()
 		},
 		clear() {
-			this.input = ""
-			this.front = ""
 			this.word = ""
-			this.tr = []
 			this.backSelected = []
+			this.def = []
+			this.defSelected = ""
 		},
 		getBack() {
 			if (this.backSelected.length == 1) return this.backSelected[0]
@@ -87,16 +116,12 @@ export default {
 			var result = await this.$fetcher({
 				url: "/api/yandex_dictionary",
 				method: "get",
+				autofill: true,
 				payload: { text: this.word, lang: this.lang },
 				toggle: value => (this.isWordLoading = value),
 			})
-			if (!result) return
-			this.word = ""
-			this.input = result.text.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-			this.front = `${result.text}\n[${result.ts}]`
-			this.tr = result.tr
+			if (result) this.word = ""
 		},
 	},
-	// computed: {},
 }
 </script>

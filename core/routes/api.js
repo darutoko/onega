@@ -64,33 +64,39 @@ router.put("/cards/:id", async (req, res, next) => {
 // })
 
 router.get("/yandex_dictionary", async (req, res, next) => {
-	var def = await getYandexDictionary({ text: req.query.text, lang: req.query.lang })
-	console.log(def)
-	if (!def.def.length) {
+	var data = await getYandexDictionary({ text: req.query.text, lang: req.query.lang })
+	console.log(data)
+	if (!data.def.length) {
 		res.locals.error = {
 			status: 200,
 			message: `Word "${req.query.text}" was not found for language ${req.query.lang}`,
 		}
 		return next(new Error(res.locals.error))
 	}
-	def = def.def[0]
-	// Prepend nouns with masculine/feminine indefinite articles
-	if (def.pos === "noun")
-		if (def.gen === "f") def.text = "une " + def.text
-		else if (def.gen === "m") def.text = "un " + def.text
 
-	var data = {
-		text: def.text,
-		ts: def.ts,
-		tr: [],
+	var result = []
+	for (let def of data.def) {
+		let d = {
+			text: def.text,
+			pos: def.pos,
+			ts: def.ts,
+			tr: [],
+		}
+		// Prepend nouns with masculine/feminine indefinite articles
+		if (d.pos === "noun")
+			if (d.gen === "f") d.text = "une " + d.text
+			else d.text = "un " + d.text
+
+		for (let tr of def.tr) {
+			if (!tr.syn) tr.syn = []
+			// Unite each translation and up to 3 of it synonyms in to separate string
+			d.tr.push([tr.text, ...tr.syn.slice(0, 3).map(s => s.text)].join(", "))
+		}
+
+		result.push(d)
 	}
 
-	for (let tr of def.tr) {
-		if (!tr.syn) tr.syn = []
-		// Unite each translation and up to 3 of it synonyms in to separate string
-		data.tr.push([tr.text, ...tr.syn.slice(0, 3).map(s => s.text)].join(", "))
-	}
-	res.json(data)
+	res.json({ def: result })
 })
 
 var getYandexDictionary = params =>
