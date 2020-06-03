@@ -19,6 +19,11 @@ router.post("/decks", async (req, res, next) => {
 	res.json({ decks: result.rows })
 })
 
+router.put("/decks/:id", async (req, res, next) => {
+	var result = await db.deck.update(req.params.id, req.body)
+	res.json({ deck: result.rows[0] })
+})
+
 router.use("/decks/:id", async (req, res, next) => {
 	var result = await db.deck.get({ id: req.params.id })
 	res.locals.deck = result.rows[0]

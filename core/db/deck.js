@@ -13,7 +13,14 @@ module.exports = {
 	create(params) {
 		return pg.query('insert into "deck" ("name") values ($1);', [params.name])
 	},
-	update() {},
+	update(id, fields) {
+		var keys = Object.keys(fields)
+		var updates = keys.map((key, i) => `"${key}" = \$${i + 1}`).join(", ")
+		return pg.query('update "deck" set ' + updates + ', "updatedAt" = default where "id" = $' + (keys.length + 1) + " returning *;", [
+			...keys.map(key => fields[key]),
+			id,
+		])
+	},
 	delete() {},
 }
 /*

@@ -9,6 +9,40 @@
 			</v-col>
 		</v-row>
 
+		<v-row align="center">
+			<v-col cols="3">
+				<v-text-field
+					v-model="deckForm.streakSize"
+					ref="streakSize"
+					label="Streak size"
+					placeholder="Streak size"
+					:rules="rules"
+				></v-text-field>
+			</v-col>
+			<v-col cols="3">
+				<v-text-field
+					v-model="deckForm.memorizeSize"
+					ref="memorizeSize"
+					label="Memorize size"
+					placeholder="Memorize size"
+					:rules="rules"
+				></v-text-field>
+			</v-col>
+			<v-col cols="3">
+				<v-text-field v-model="deckForm.testSize" ref="testSize" label="Test size" placeholder="Test size" :rules="rules"></v-text-field>
+			</v-col>
+			<v-col cols="3">
+				<v-btn
+					color="blue darken-3"
+					:loading="isDeckFormUploading"
+					:disabled="isSaveDisabled"
+					@click="submitDeckForm"
+					:dark="!isSaveDisabled"
+					>Save</v-btn
+				>
+			</v-col>
+		</v-row>
+
 		<v-row>
 			<v-col class="pa-0">
 				<v-expansion-panels flat>
@@ -39,8 +73,8 @@
 		</v-row>
 
 		<v-row>
-			<v-col>
-				<v-data-table :headers="headers" :items="cards" v-model="selectedCards" sort-by="input" show-select>
+			<v-col class="pa-0">
+				<v-data-table :headers="headers" :items="cards" v-model="selectedCards" sort-by="input" :items-per-page="25" show-select>
 					<template v-slot:top>
 						<v-container fluid>
 							<v-row>
@@ -121,6 +155,11 @@ export default {
 		return {
 			isLoading: false,
 			deck: { name: "" },
+			deckForm: {
+				streakSize: 0,
+				memorizeSize: 0,
+				testSize: 0,
+			},
 			dialog: {
 				show: false,
 				type: "move",
@@ -161,11 +200,20 @@ export default {
 					value: "CardFormYaDi",
 				},
 			],
+			rules: [
+				v => !!v || "Required",
+				v => /^\d+$/.test(v) || "Value must be a positive integer number",
+				v => v > 0 || "Value must be greater than zero",
+			],
+			isDeckFormUploading: false,
 		}
 	},
 	computed: {
 		isCardsSelected() {
 			return this.selectedCards.length > 0
+		},
+		isSaveDisabled() {
+			return Object.keys(this.deckForm).reduce((result, field) => (result = result && this.deckForm[field] == this.deck[field]), true)
 		},
 	},
 	methods: {
@@ -223,9 +271,31 @@ export default {
 			if (month < 10) month = "0" + month
 			return year + "-" + month + "-" + day
 		},
+		async submitDeckForm() {
+			var fields = Object.keys(this.deckForm)
+			if (!fields.reduce((result, field) => (result = result && this.$refs[field].validate()), true)) return
+
+			var payload = {}
+			fields.forEach(field => {
+				if (this.deckForm[field] != this.deck[field]) payload[field] = this.deckForm[field]
+			})
+			if (!Object.keys(payload).length) return
+
+			await this.$fetcher({
+				url: "/api/decks/" + this.$route.params.id,
+				method: "put",
+				payload,
+				autofill: true,
+				toggle: value => (this.isDeckFormUploading = value),
+			})
+		},
+		resetDeckForm() {
+			Object.keys(this.deckForm).forEach(field => (this.deckForm[field] = this.deck[field]))
+		},
 	},
 	async created() {
 		await this.$fetcher({ url: "/api/decks/" + this.$route.params.id, autofill: true })
+		this.resetDeckForm()
 	},
 }
 </script>
